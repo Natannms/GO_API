@@ -5,13 +5,18 @@ import (
 	"net/http"
 
 	"github.com/Natannms/GO_API/controllers"
+	"github.com/gorilla/mux"
 )
 
 func HandleRequest() {
-	http.HandleFunc("/", controllers.Home) 
-	http.HandleFunc("/user", controllers.AllUsers)
-	http.HandleFunc("/user", controllers.CreateUser)
-	http.HandleFunc("/user/:1", controllers.UpdateUser)
-	http.HandleFunc("/user/:1", controllers.DeleteUser)
-	log.Fatal(http.ListenAndServe(":8000", nil)) 
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", controllers.Home)
+	r.HandleFunc("/user", controllers.AllUsers)
+	r.HandleFunc("/user", controllers.CreateUser)
+	r.HandleFunc("/user/{id}", controllers.GetUser)
+	r.HandleFunc("/user/{id}", controllers.UpdateUser)
+	r.HandleFunc("/user/{id}", controllers.DeleteUser)
+
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
