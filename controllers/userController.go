@@ -29,13 +29,26 @@ func GetUser(r http.ResponseWriter, rq *http.Request) {
 
 }
 func CreateUser(r http.ResponseWriter, rq *http.Request) {
-	fmt.Println("Usuario Criado com Sucesso")
+	var user models.User
+	json.NewDecoder(rq.Body).Decode(&user)
+	database.Conn().Create(&user)
+	json.NewEncoder(r).Encode(user)
 }
 
 func UpdateUser(r http.ResponseWriter, rq *http.Request) {
-	fmt.Println("Usuario Atualizado com Sucesso")
+	vars := mux.Vars(rq)
+	id := vars["id"]
+	var user models.User
+	database.Conn().First(&user, id)
+	json.NewDecoder(rq.Body).Decode(&user)
+	database.Conn().Save(&user)
+	json.NewEncoder(r).Encode(&user)
 }
 
 func DeleteUser(r http.ResponseWriter, rq *http.Request) {
-	fmt.Println("Usuario Deletado com Sucesso")
+	vars := mux.Vars(rq)
+	id := vars["id"]
+	var user models.User
+	database.Conn().Delete(&user, id)
+	json.NewEncoder(r).Encode(user)
 }
