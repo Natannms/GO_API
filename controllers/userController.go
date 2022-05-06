@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
+	"github.com/Natannms/GO_API/database"
 	"github.com/Natannms/GO_API/models"
 	"github.com/gorilla/mux"
 )
@@ -15,20 +15,18 @@ func Home(r http.ResponseWriter, rq *http.Request) {
 }
 
 func AllUsers(r http.ResponseWriter, rq *http.Request) {
-
-	json.NewEncoder(r).Encode(models.Users)
+	var users []models.User
+	database.Conn().Find(&users)
+	json.NewEncoder(r).Encode(users)
 }
 func GetUser(r http.ResponseWriter, rq *http.Request) {
 	vars := mux.Vars(rq)
-	id := vars["id"] // Pega o parametro id da url
+	id := vars["id"]
+	var user models.User
+	database.Conn().First(&user, id)
 
-	for _, user := range models.Users {
-		//percorre todo o array
-		if strconv.Itoa(user.Id) == id {
-			//compara id para retornar as informações
-			json.NewEncoder(r).Encode(user)
-		}
-	}
+	json.NewEncoder(r).Encode(user)
+
 }
 func CreateUser(r http.ResponseWriter, rq *http.Request) {
 	fmt.Println("Usuario Criado com Sucesso")
